@@ -22,3 +22,12 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+
+
+enhuify is a rails app fronting a Hue light bulb
+
+light bulb can have the following set
+* hue (0-65535)
+* saturation (0-255)
+* brightness (0-255)
