@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class BulbsController < ApplicationController
   before_action :set_bulb, only: [:show, :edit, :update, :destroy, :random, :set]
 
@@ -25,6 +27,12 @@ class BulbsController < ApplicationController
   # POST /bulbs.json
   def create
     @bulb = Bulb.new(bulb_params)
+    @changelog = Changelog.new({
+      :remote_id => request.remote_ip,
+      :guid => SecureRandom.uuid,
+      :action => "create",
+      })
+    @changelog.save!
 
     respond_to do |format|
       if @bulb.save
@@ -40,6 +48,12 @@ class BulbsController < ApplicationController
   # PATCH/PUT /bulbs/1
   # PATCH/PUT /bulbs/1.json
   def update
+    @changelog = Changelog.new({
+      :remote_id => request.remote_ip,
+      :guid => SecureRandom.uuid,
+      :action => "update",
+      })
+    @changelog.save!
     respond_to do |format|
       if @bulb.update(bulb_params)
         format.html { redirect_to @bulb, notice: 'Bulb was successfully updated.' }
@@ -54,6 +68,12 @@ class BulbsController < ApplicationController
   # DELETE /bulbs/1
   # DELETE /bulbs/1.json
   def destroy
+    @changelog = Changelog.new({
+      :remote_id => request.remote_ip,
+      :guid => SecureRandom.uuid,
+      :action => "destroy",
+      })
+    @changelog.save!
     @bulb.destroy
     respond_to do |format|
       format.html { redirect_to bulbs_url, notice: 'Bulb was successfully destroyed.' }
@@ -80,6 +100,12 @@ class BulbsController < ApplicationController
   # GET /bulbs/1/set/12345/255/255
   # GET /bulbs/:id/set/:hue/:sat/:bri
   def set
+    @changelog = Changelog.new({
+      :remote_id => request.remote_ip,
+      :guid => SecureRandom.uuid,
+      :action => "set",
+      })
+    @changelog.save!
     hue = Integer(params[:hue])
     sat = Integer(params[:sat])
     bri = Integer(params[:bri])
@@ -104,3 +130,9 @@ class BulbsController < ApplicationController
       params.require(:bulb).permit(:hue, :saturation, :brightness)
     end
 end
+
+
+
+# TODO generate a UUID to identify the request and hand it back to the requester
+# require 'SecureRandom'
+# SecureRandom.uuid # => "96b0a57c-d9ae-453f-b56f-3b154eb10cda"
