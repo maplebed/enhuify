@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180312050811) do
+ActiveRecord::Schema.define(version: 20180408011915) do
 
   create_table "bulbs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "hue"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20180312050811) do
     t.integer "brightness"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "request_id"
   end
 
   create_table "changelogs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -26,6 +27,11 @@ ActiveRecord::Schema.define(version: 20180312050811) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "action"
+    t.integer "bulb_id"
+    t.string "hue"
+    t.string "saturation"
+    t.string "brightness"
+    t.boolean "succeeded"
   end
 
 end

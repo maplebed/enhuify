@@ -1,2 +1,5 @@
-json.extract! bulb, :id, :hue, :saturation, :brightness, :created_at, :updated_at
-json.url bulb_url(bulb, format: :json)
+json.extract! bulb, :hue, :saturation, :brightness
+# json.url bulb_url(bulb, format: :json)
+if Rails.application.config.return_ids
+    json.extract! bulb, :request_id
+end
