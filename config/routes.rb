@@ -26,10 +26,5 @@ Rails.application.routes.draw do
       get '/admin/set_queue_delay/:delay', to: 'admin#set_queue_delay', constraints: { delay: /[0-9.]+/ }
       get '/admin/get_queue_delay', to: 'admin#get_queue_delay'
   end
-  # resources :bulbs
-  # For details on the DSL available within this file, see
-  # http://guides.rubyonrails.org/routing.html
-  # get '/bulbs/:id/random', to: 'bulbs#random'
-  # get '/bulbs/:id/set/:hue/:sat/:bri', to: 'bulbs#set'
 end
 
