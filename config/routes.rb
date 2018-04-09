@@ -23,6 +23,8 @@ Rails.application.routes.draw do
       get '/admin/toggle_queue_changes', to: 'admin#toggle_queue_changes'
       get '/admin/set_queue_changes', to: 'admin#set_queue_changes'
       get '/admin/get_queue_changes', to: 'admin#get_queue_changes'
+      get '/admin/set_queue_delay/:delay', to: 'admin#set_queue_delay'
+      get '/admin/get_queue_delay', to: 'admin#get_queue_delay'
   end
   # resources :bulbs
   # For details on the DSL available within this file, see

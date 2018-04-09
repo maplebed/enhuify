@@ -1,6 +1,11 @@
 class AdminController < ApplicationController
     before_action :have_secret
-    before_action :has_bool_state, only:[:set_sharding, :set_return_ids]
+    before_action :has_bool_state, only:[
+        :set_sharding,
+        :set_return_ids,
+        :set_enable_bulb,
+        :set_queue_changes,
+    ]
 
     # example: curl 'localhost:3000/admin/toggle_sharding?trustme=puppies4eva'
     def toggle_sharding
@@ -64,6 +69,20 @@ class AdminController < ApplicationController
     end
 
     def get_queue_changes
+    end
+
+    # example curl 'localhost:3000/admin/set_queue_delay?trustme=puppieva&delay=0.6' -v
+    def set_queue_delay
+        new_delay = params[:delay].to_f
+        if new_delay == 0
+            head :bad_request
+        else
+            Rails.application.config.queue_delay = new_delay
+            render :get_queue_delay
+        end
+    end
+
+    def get_queue_delay
     end
 
     private

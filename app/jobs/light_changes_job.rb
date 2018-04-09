@@ -28,6 +28,6 @@ class LightChangesJob < ApplicationJob
     changelog.save!
     # take a while to finish the job to limit the speed at which jobs are pulled
     # off the queue.  100ms per job seems like a good rate.
-    sleep(0.8)
+    sleep(Rails.application.config.queue_delay)
   end
 end
