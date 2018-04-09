@@ -4,11 +4,11 @@ class BulbsController < ApplicationController
   before_action :choose_shard, only: [:show, :edit, :update, :destroy, :random, :set]
   before_action :set_bulb, only: [:show, :edit, :update, :destroy, :random, :set]
 
-#   # GET /bulbs
-#   # GET /bulbs.json
-#   def index
-#     @bulbs = Bulb.all
-#   end
+  # GET /bulbs
+  # GET /bulbs.json
+  def index
+    # @bulbs = Bulb.all
+  end
 
   # GET /bulbs/1
   # GET /bulbs/1.json
@@ -74,6 +74,8 @@ class BulbsController < ApplicationController
             })
       changelog.save!
       LightChangesJob.perform_later bulb, changelog
+
+      # return either a request ID or just a 202 accepted
       if Rails.application.config.return_ids
         render :accepted, status: :accepted, location: @bulb
       else
@@ -83,7 +85,7 @@ class BulbsController < ApplicationController
       ### this version makes changes to the bulb immediately and blocks until success
       ok = @bulb.update(bulb_params)
       if ok
-        # render :show, status: :ok, location: @bulb
+        # return either a request ID or just a 202 accepted
         if Rails.application.config.return_ids
           render :accepted, status: :accepted, location: @bulb
         else

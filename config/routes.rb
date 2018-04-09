@@ -23,7 +23,7 @@ Rails.application.routes.draw do
       get '/admin/toggle_queue_changes', to: 'admin#toggle_queue_changes'
       get '/admin/set_queue_changes', to: 'admin#set_queue_changes'
       get '/admin/get_queue_changes', to: 'admin#get_queue_changes'
-      get '/admin/set_queue_delay/:delay', to: 'admin#set_queue_delay'
+      get '/admin/set_queue_delay/:delay', to: 'admin#set_queue_delay', constraints: { delay: /[0-9.]+/ }
       get '/admin/get_queue_delay', to: 'admin#get_queue_delay'
   end
   # resources :bulbs
