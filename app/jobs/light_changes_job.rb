@@ -5,7 +5,8 @@ class LightChangesJob < ApplicationJob
     @queues ||= [0, 1].map do |shard|
       q = SizedQueue.new
       Thread.new do
-        while bulbmap, changelog = q.pop
+        while job = q.pop
+          bulbmap, changelog = job
           perform_shard(bulbmap, changelog)
         end
       end
