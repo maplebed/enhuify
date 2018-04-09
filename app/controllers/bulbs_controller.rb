@@ -112,6 +112,7 @@ class BulbsController < ApplicationController
       else
         @bulb = Bulb.find(2)
       end
+      params.delete :shard_override
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

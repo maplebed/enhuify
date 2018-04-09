@@ -27,6 +27,8 @@ def save
             }, transition_time)
     end
     self.save!
+    # fail some of the time, cuz why not.
+    return rand(10) == 0
 end
 
 end
