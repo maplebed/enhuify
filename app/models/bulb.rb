@@ -28,7 +28,7 @@ def save
     end
     self.save!
     # fail some of the time, cuz why not.
-    return rand(10) == 0
+    return rand(10) != 0
 end
 
 end

@@ -11,7 +11,7 @@ max = 0
 min = 0
 while true
     i += 1
-    @logs = Changelog.where(succeeded: false).last(50)
+    @logs = Changelog.where(processed: false).last(50)
     numlogs = @logs.length
     max = numlogs > max ? numlogs : max
     min = numlogs < min ? numlogs : min

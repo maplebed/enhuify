@@ -40,6 +40,7 @@ class BulbsController < ApplicationController
                 "saturation" => @bulb.saturation,
                 "brightness" => @bulb.brightness,
                 "succeeded" => false,
+                "processed" => false,
                 "created_at" => Time.current.to_s,
             })
       changelog.save!
@@ -72,6 +73,7 @@ class BulbsController < ApplicationController
         :hue => @bulb.hue,
         :saturation => @bulb.saturation,
         :brightness => @bulb.brightness,
+        :processed => true,
         :succeeded => ok,
         })
       @changelog.save!
