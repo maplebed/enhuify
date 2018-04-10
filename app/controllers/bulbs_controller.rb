@@ -13,6 +13,12 @@ class BulbsController < ApplicationController
   # GET /bulbs/1
   # GET /bulbs/1.json
   def show
+# logger.warn "*** BEGIN RAW REQUEST HEADERS ***"
+# self.request.env.each do |header|
+#   logger.warn "HEADER KEY: #{header[0]}"
+#   logger.warn "HEADER VAL: #{header[1]}"
+# end
+# logger.warn "*** END RAW REQUEST HEADERS ***"
   end
 
 
@@ -83,6 +89,10 @@ class BulbsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
 
+    def ip()
+      request.env['HTTP_X_FORWARDED_FOR'] || request.remote_ip
+    end
+
     # for the first part of the demo, allow_sharding will be false and we'll
     # always use the "odd" shard. Once sharding is enabled, we'll split on the
     # last digit of the IP address to choose whether you're hitting the even or
@@ -95,16 +105,18 @@ class BulbsController < ApplicationController
       else
         logger.info "sharded world"
         @shard = params[:shard_override]
-        if @shard == ""
+        if ! @shard
+          logger.info "bar"
           # take the last character of the IP address and sort evens and odds
-          if request.remote_ip[-1].to_i % 2 == 0
+          logger.info "using #{ip()} as the IP and the last char is #{ip()[-1].to_i} and it is #{ip()[-1].to_i % 2 == 0}"
+          if ip()[-1].to_i % 2 == 0
             @shard = "even"
           else
             @shard = "odd"
           end
         end
       end
-      logger.info "set shard to #{@shard}"
+      logger.info "set shard to >>#{@shard}<<"
     end
 
     # Use callbacks to share common setup or constraints between actions.
