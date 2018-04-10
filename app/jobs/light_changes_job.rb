@@ -9,7 +9,7 @@ class LightChangesJob < ApplicationJob
           bulbmap, changelog = job
           begin
             # don't let job panics kill the thread
-            perform_shard(bulbmap, changelog)
+            perform_shard(bulbmap, changelog, q.length)
           rescue => e
             print "caught exception: #{e}, #{e.backtrace}\n"
           end
@@ -25,9 +25,11 @@ class LightChangesJob < ApplicationJob
     LightChangesJob.queues[shard] << [bulbmap, changelog]
   end
 
-  def self.perform_shard(bulbmap, changelog)
+  def self.perform_shard(bulbmap, changelog, qlen)
     ev = $honeycomb.event()
     ev.add(bulbmap)
+    ev.timestamp = changelog.created_at
+    ev.add_field("queue_length", qlen)
     # mark this job as having been processed, no longer pending
     changelog.processed = true
     logger.info "processing queued change: #{bulbmap}"
