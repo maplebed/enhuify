@@ -11,7 +11,7 @@ class LightChangesJob < ApplicationJob
             # don't let job panics kill the thread
             perform_shard(bulbmap, changelog, q.length)
           rescue => e
-            print "caught exception: #{e}, #{e.backtrace}\n"
+            logger.error "caught exception: #{e}, #{e.backtrace}"
           end
         end
       end
@@ -21,15 +21,16 @@ class LightChangesJob < ApplicationJob
 
   def perform(bulbmap, changelog)
     shard = bulbmap["id"].to_i - 1
-    print "bulbmap shard is #{shard}\n"
+    logger.info "bulbmap shard is #{shard}"
     LightChangesJob.queues[shard] << [bulbmap, changelog]
   end
 
   def self.perform_shard(bulbmap, changelog, qlen)
     ev = $honeycomb.event()
-    ev.add(bulbmap)
     ev.timestamp = changelog.created_at
+    ev.add(bulbmap)
     ev.add_field("queue_length", qlen)
+
     # mark this job as having been processed, no longer pending
     changelog.processed = true
     logger.info "processing queued change: #{bulbmap}"
@@ -43,12 +44,13 @@ class LightChangesJob < ApplicationJob
       if ok == true
         changelog.succeeded = true
       else
-        logger.info "failed to save bulb for unknown reason"
+        logger.error "failed to save bulb for unknown reason"
       end
     rescue => e
-      logger.info "bulb save blew up: #{e}, #{e.backtrace}"
+      logger.error "bulb save blew up: #{e}, #{e.backtrace}"
     end
     changelog.save!
+
     # take a while to finish the job to limit the speed at which jobs are pulled
     # off the queue.  Rate set via config
     ev.add(changelog.attributes)
