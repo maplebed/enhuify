@@ -41,23 +41,25 @@ end
 
 def main
     hny = init_libhoney()
+    success = false
+
     color = rand_color
     set_state(:hue => color)
     start = Time.now
     for iter in 1..30
-        currently = get_state["hue"]
-        break if currently == color
+        success = get_state["hue"] == color
+        break if success
         sleep(0.1)
     end
     dur = Time.now - start
-    if currently == color
+    if success
         puts "took #{iter} times to get to color, total check time #{dur}"
     else
         puts "failed after #{iter} times"
     end
     hny.send_now({
         :durationSec => dur,
-        :success => currently == color,
+        :success => success,
         :iterations => iter,
     })
     hny.close
