@@ -25,21 +25,25 @@ class BulbsController < ApplicationController
   # PATCH/PUT /bulbs/1
   # PATCH/PUT /bulbs/1.json
   def update
-    guid=SecureRandom.uuid
-    @bulb.assign_attributes({ :request_id => guid })
+    @bulb.assign_attributes({ :request_id => request.request_id })
     if Rails.application.config.queue_changes
       ### this version pushes changes into a queue to be triggered when it can
-      @bulb.assign_attributes(bulb_params)
+      attrs = bulb_params
+      if attrs[:error]
+        head :bad_request
+        return
+      end
+      @bulb.assign_attributes(attrs)
       bulb = {
         "id" => @bulb.id,
         "hue" => @bulb.hue,
         "brightness" => @bulb.brightness,
         "saturation" => @bulb.saturation,
-        "request_id" => guid,
+        "request_id" => request.request_id,
       }
       changelog = Changelog.new({
-                "remote_id" => request.remote_ip,
-                "guid" => guid,
+                "remote_id" => ip(),
+                "guid" => request.request_id,
                 "action" => "update",
                 "bulb_id" => @bulb.id,
                 "hue" => @bulb.hue,
@@ -60,7 +64,12 @@ class BulbsController < ApplicationController
       end
     else
       ### this version makes changes to the bulb immediately and blocks until success
-      ok = @bulb.update(bulb_params)
+      attrs = bulb_params
+      if attrs[:error]
+        head :bad_request
+        return
+      end
+      ok = @bulb.update(attrs)
       if ok
         # return either a request ID or just a 202 accepted
         if Rails.application.config.return_ids
@@ -72,8 +81,8 @@ class BulbsController < ApplicationController
         render json: @bulb.errors, status: :unprocessable_entity
       end
       @changelog = Changelog.new({
-        :remote_id => request.remote_ip,
-        :guid => guid,
+        :remote_id => ip(),
+        :guid => request.request_id,
         :action => "update",
         :bulb_id => @bulb.id,
         :hue => @bulb.hue,
@@ -106,10 +115,10 @@ class BulbsController < ApplicationController
         logger.info "sharded world"
         @shard = params[:shard_override]
         if ! @shard
-          logger.info "bar"
           # take the last character of the IP address and sort evens and odds
-          logger.info "using #{ip()} as the IP and the last char is #{ip()[-1].to_i} and it is #{ip()[-1].to_i % 2 == 0}"
-          if ip()[-1].to_i % 2 == 0
+          # logger.info "using #{ip()} as the IP and the last char is #{ip()[-1].to_i} and it is #{ip()[-1].to_i % 2 == 0}"
+          # if ip()[-1].to_i % 2 == 0
+          if rand(2) == 0
             @shard = "even"
           else
             @shard = "odd"
@@ -131,7 +140,19 @@ class BulbsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def bulb_params
-      params.permit(:hue, :saturation, :brightness, :shard_override)
+      logger.info "color is >>#{request.parameters[:color]}<<"
+      if request.parameters[:color] != nil
+        logger.info "in color"
+        hsb = $colors[request.parameters[:color]]
+        logger.info "hsb is >>#{hsb}<<"
+        if hsb
+          logger.info "in hsb"
+          return {:hue => hsb[:hue], :saturation => hsb[:saturation], :brightness => hsb[:brightness]}
+        else
+          return {:error => "unknown color #{request.parameters[:color]}"}
+        end
+      end
+      params.permit(:hue, :saturation, :brightness, :shard_override, :color)
     end
 end
 

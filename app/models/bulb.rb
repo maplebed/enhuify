@@ -53,9 +53,11 @@ def save
             :brightness => self.brightness,
             }, transition_time)
     end
-    self.save!
     # fail some of the time, cuz why not.
-    return rand(10) != 0
+    if rand(10) != 0
+        return self.save!
+    end
+    return false
 end
 
 end

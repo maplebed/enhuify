@@ -42,6 +42,11 @@ class AdminController < ApplicationController
     # example: curl 'localhost:3000/admin/toggle_enable_bulb?trustme=puppies4eva'
     def toggle_enable_bulb
         Rails.application.config.enable_bulb = !Rails.application.config.enable_bulb
+        if Rails.application.config.enable_bulb
+            $hueclient = Hue::Client.new
+        else
+            $hueclient = nil
+        end
         render :get_enable_bulb
     end
 
@@ -49,6 +54,11 @@ class AdminController < ApplicationController
     # example curl 'localhost:3000/admin/set_enable_bulb?trustme=puppieva&state=true' -v
     def set_enable_bulb
         Rails.application.config.enable_bulb = params[:state]
+        if Rails.application.config.enable_bulb
+            $hueclient = Hue::Client.new
+        else
+            $hueclient = nil
+        end
         render :get_enable_bulb
     end
 
