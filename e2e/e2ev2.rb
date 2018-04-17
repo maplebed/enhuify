@@ -44,24 +44,24 @@ end
 
 def main
     hny = init_libhoney()
+
     color = rand_color
     request_id = set_state(:hue => color)["request_id"]
     start = Time.now
     for iter in 1..120
-        currently = get_state["request_id"]
-        # puts "checking original #{request_id} against current state #{currently}"
-        break if currently == request_id
+        success = get_state["request_id"] == request_id
+        break if success
         sleep(0.2)
     end
     dur = Time.now - start
-    if currently == request_id
+    if success
         puts "took #{iter} times to get to request_id, total check time #{dur}"
     else
         puts "failed after #{iter} times"
     end
     hny.send_now({
         :durationSec => dur,
-        :success => currently == request_id,
+        :success => success,
         :iterations => iter,
     })
     hny.close
