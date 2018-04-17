@@ -1,3 +1,5 @@
+require 'libhoney'
+
 class LightChangesJob < ApplicationJob
   queue_as :default
 
@@ -25,8 +27,17 @@ class LightChangesJob < ApplicationJob
     LightChangesJob.queues[shard] << [bulbmap, changelog]
   end
 
+  def self.honeycomb
+    @honeycomb ||= Libhoney::Client.new(
+      # Use an environment variable to set your write key with something like
+      #   `:writekey => ENV["HONEYCOMB_WRITEKEY"]`
+      :writekey =>  ENV["HONEYCOMB_WRITEKEY"],
+      :dataset => "enhuify"
+    )
+  end
+
   def self.perform_shard(bulbmap, changelog, qlen)
-    ev = $honeycomb.event()
+    ev = honeycomb.event()
     ev.timestamp = changelog.created_at
     ev.add(bulbmap)
     ev.add_field("queue_length", qlen)
@@ -51,11 +62,12 @@ class LightChangesJob < ApplicationJob
     end
     changelog.save!
 
-    # take a while to finish the job to limit the speed at which jobs are pulled
-    # off the queue.  Rate set via config
     ev.add(changelog.attributes)
     ev.add_field("delaySec", changelog.updated_at - changelog.created_at )
     ev.send()
+
+    # take a while to finish the job to limit the speed at which jobs are pulled
+    # off the queue.  Rate set via config
     sleep(Rails.application.config.queue_delay)
   end
 end
