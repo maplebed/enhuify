@@ -22,20 +22,15 @@ def rand_color
 end
 
 def get_state
-    response = HTTParty.get($url)
-    response.parsed_response
+    HTTParty.get($url).parsed_response
 end
 
 def set_state(color)
-    # print "#{color}\n"
     response = HTTParty.put($url,
         :body => color.to_json,
-        :headers => { 'Content-Type' => 'application/json' } )
+        :headers => { 'Content-Type' => 'application/json' }
+    )
     response.parsed_response
-end
-
-def report(hny, fields)
-    hny.send_now(fields)
 end
 
 def init_libhoney
@@ -50,27 +45,25 @@ end
 def main
     hny = init_libhoney()
     color = rand_color
-    request_id = set_state(hue: color)["request_id"]
+    request_id = set_state(:hue => color)["request_id"]
     start = Time.now
-    for iter in 0..120
+    for iter in 1..120
         currently = get_state["request_id"]
-        # print "checking original #{request_id} against current state #{currently}\n"
-        if currently == request_id
-            break
-        end
+        # puts "checking original #{request_id} against current state #{currently}"
+        break if currently == request_id
         sleep(0.2)
     end
     dur = Time.now - start
     if currently == request_id
-        print "took #{iter} times to get to request_id, total check time #{dur}\n"
+        puts "took #{iter} times to get to request_id, total check time #{dur}"
     else
-        print "failed after #{iter} times\n"
+        puts "failed after #{iter} times"
     end
-    report(hny, {
+    hny.send_now({
         :durationSec => dur,
         :success => currently == request_id,
         :iterations => iter,
-        })
+    })
     hny.close
 end
 
