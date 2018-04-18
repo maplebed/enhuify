@@ -45,7 +45,7 @@ class LightChangesJob < ApplicationJob
     # mark this job as having been processed, no longer pending
     changelog.processed = true
     logger.info "processing queued change: #{bulbmap}"
-    bulb = Bulb.find(bulbmap["id"])
+    bulb = Bulb.find(bulbmap[:id])
     bulb.assign_attributes(bulbmap)
     begin
       start = Time.now
