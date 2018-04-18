@@ -43,7 +43,7 @@ class BulbsController < ApplicationController
       }
       changelog = Changelog.new({
                 :remote_ip => ip(),
-                :guid => request.request_id,
+                :request_id => request.request_id,
                 :action => "update",
                 :bulb_id => @bulb.id,
                 :hue => @bulb.hue,
@@ -82,7 +82,7 @@ class BulbsController < ApplicationController
       end
       @changelog = Changelog.new({
         :remote_id => ip(),
-        :guid => request.request_id,
+        :request_id => request.request_id,
         :action => "update",
         :bulb_id => @bulb.id,
         :hue => @bulb.hue,

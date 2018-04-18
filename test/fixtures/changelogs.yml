@@ -2,8 +2,8 @@
 
 one:
   remote_id: MyString
-  guid: MyString
+  request_id: MyString
 
 two:
   remote_id: MyString
-  guid: MyString
+  request_id: MyString
