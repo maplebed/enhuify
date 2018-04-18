@@ -1,3 +1,4 @@
+json.ignore_nil!
 json.extract! bulb, :hue, :saturation, :brightness, :color
 # json.url bulb_url(bulb, format: :json)
 if Rails.application.config.return_ids

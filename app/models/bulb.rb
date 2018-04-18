@@ -8,6 +8,7 @@ class Bulb < ApplicationRecord
     validates :brightness, numericality: { only_integer: true,
                                     greater_than_or_equal_to: 0,
                                     less_than: 256 }
+    attr_accessor :color
 
 # red hue = 0
 # green hue = 25500

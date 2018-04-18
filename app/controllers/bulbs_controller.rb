@@ -16,12 +16,16 @@ class BulbsController < ApplicationController
     if Rails.application.config.enable_bulb
         light = $hueclient.lights[@bulb.id - 1]
         light.refresh
-        return Bulb.new({
-          :id => @bulb.id,
+        hsb = {
           :hue => light.hue,
           :saturation => light.saturation,
           :brightness => light.brightness
-        })
+        }
+        if color = color_from_hsb(hsb)
+          hsb[:color] = color
+        end
+        b = Bulb.new({ :id => @bulb.id }.merge(hsb))
+        @bulb = b
     end
     @bulb
   end
@@ -161,13 +165,11 @@ class BulbsController < ApplicationController
     # exect hsb to be a hash of {:hue, :saturation, :brightness}. will be nil if
     # the hsb value doesn't have a color
     def color_from_hsb(hsb)
-      return $colors.key(hsb)
+      $colors.key(hsb)
     end
 
     # expect color to be a "red" or :red. returns nil if the color doesn't exist
     def hsb_from_color(color)
-      return $colors[color.to_sym]
+      $colors[color.to_sym]
     end
-
 end
-
