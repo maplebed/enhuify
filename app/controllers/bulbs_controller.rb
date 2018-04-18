@@ -81,7 +81,7 @@ class BulbsController < ApplicationController
         render json: @bulb.errors, status: :unprocessable_entity
       end
       @changelog = Changelog.new({
-        :remote_id => ip(),
+        :remote_ip => ip(),
         :request_id => request.request_id,
         :action => "update",
         :bulb_id => @bulb.id,
