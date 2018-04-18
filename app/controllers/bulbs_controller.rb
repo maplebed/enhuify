@@ -142,8 +142,8 @@ class BulbsController < ApplicationController
     def bulb_params
       logger.info "color is >>#{request.parameters[:color]}<<"
       if request.parameters[:color] != nil
-        logger.info "in color"
-        hsb = $colors[request.parameters[:color]]
+        logger.info "in color with #{request.parameters[:color]}"
+        hsb = $colors[request.parameters[:color].to_sym]
         logger.info "hsb is >>#{hsb}<<"
         if hsb
           logger.info "in hsb"

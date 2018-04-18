@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180418030525) do
+ActiveRecord::Schema.define(version: 20180418031800) do
 
   create_table "bulbs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "hue"
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20180418030525) do
   end
 
   create_table "changelogs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string "remote_id"
+    t.string "remote_ip"
     t.string "request_id"
     t.datetime "created_at", precision: 3, null: false
     t.datetime "updated_at", precision: 3, null: false
