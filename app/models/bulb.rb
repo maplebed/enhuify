@@ -20,6 +20,11 @@ class Bulb < ApplicationRecord
 
     def save
         logger.info "Processing the request..."
+        # fail some of the time, cuz why not.
+        if bulb_color == :green and rand(5) == 0
+            return false
+        end
+
 
         # if we're doing it for real and using a bulb
         if Rails.application.config.enable_bulb
@@ -27,17 +32,33 @@ class Bulb < ApplicationRecord
             # $hueclient.lights.each { |light| light.hue = rand(Hue::Light::HUE_RANGE) }
             # no dilly-dallying around this time
             transition_time = 0
-            light.set_state({
+            ok = light.set_state({
                 # :color_temperature => 400,
                 :hue => self.hue,
                 :saturation => self.saturation,
                 :brightness => self.brightness,
                 }, transition_time)
+            logger.info "light returned #{ok}"
         end
-        # fail some of the time, cuz why not.
-        if rand(10) != 0
-            return self.save!
-        end
-        return false
+        return self.save!
     end
+
+    private
+
+    def bulb_color()
+        color_from_hsb({:hue => self.hue, :saturation => self.saturation, :brightness => self.brightness})
+    end
+
+    # exect hsb to be a hash of {:hue, :saturation, :brightness}. will be nil if
+    # the hsb value doesn't have a color
+    def color_from_hsb(hsb)
+      $colors.key(hsb)
+    end
+
+    # expect color to be a "red" or :red. returns nil if the color doesn't exist
+    def hsb_from_color(color)
+      $colors[color.to_sym]
+    end
+
+
 end
