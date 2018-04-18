@@ -51,6 +51,7 @@ class BulbsController < ApplicationController
                 :request_id => request.request_id,
                 :action => "update",
                 :bulb_id => @bulb.id,
+                :color => color_from_hsb({:hue => @bulb.hue, :saturation => @bulb.saturation, :brightness => @bulb.brightness}),
                 :hue => @bulb.hue,
                 :saturation => @bulb.saturation,
                 :brightness => @bulb.brightness,
@@ -90,6 +91,7 @@ class BulbsController < ApplicationController
         :request_id => request.request_id,
         :action => "update",
         :bulb_id => @bulb.id,
+        :color => @bulb.color,
         :hue => @bulb.hue,
         :saturation => @bulb.saturation,
         :brightness => @bulb.brightness,
@@ -145,19 +147,27 @@ class BulbsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def bulb_params
-      logger.info "color is >>#{request.parameters[:color]}<<"
       if request.parameters[:color] != nil
-        logger.info "in color with #{request.parameters[:color]}"
-        hsb = $colors[request.parameters[:color].to_sym]
-        logger.info "hsb is >>#{hsb}<<"
+        hsb = hsb_from_color(request.parameters[:color])
         if hsb
-          logger.info "in hsb"
-          return {:hue => hsb[:hue], :saturation => hsb[:saturation], :brightness => hsb[:brightness]}
+          return hsb
         else
           return {:error => "unknown color #{request.parameters[:color]}"}
         end
       end
       params.permit(:hue, :saturation, :brightness, :shard_override, :color)
     end
+
+    # exect hsb to be a hash of {:hue, :saturation, :brightness}. will be nil if
+    # the hsb value doesn't have a color
+    def color_from_hsb(hsb)
+      return $colors.key(hsb)
+    end
+
+    # expect color to be a "red" or :red. returns nil if the color doesn't exist
+    def hsb_from_color(color)
+      return $colors[color.to_sym]
+    end
+
 end
 
