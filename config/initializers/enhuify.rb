@@ -35,11 +35,11 @@ $logfh = open("/tmp/reqlog", 'a')
 
 # color to HSB values TODO fill these in
 $colors = {
-    "red" => {:hue =>"0", :saturation => "255", :brightness => "255"},
-    "blue" => {:hue =>"47000", :saturation => "255", :brightness => "255"},
-    "green" => {:hue =>"25500", :saturation => "255", :brightness => "255"},
-    "yellow" => {:hue =>"17500", :saturation => "255", :brightness => "255"},
-    "orange" => {:hue =>"4", :saturation => "255", :brightness => "255"},
-    "purple" => {:hue =>"5", :saturation => "255", :brightness => "255"},
-    "white" => {:hue =>"6", :saturation => "255", :brightness => "255"},
+    :red => {:hue =>"0", :saturation => "255", :brightness => "255"},
+    :blue => {:hue =>"47000", :saturation => "255", :brightness => "255"},
+    :green => {:hue =>"25500", :saturation => "255", :brightness => "255"},
+    :yellow => {:hue =>"17500", :saturation => "255", :brightness => "255"},
+    :orange => {:hue =>"4", :saturation => "255", :brightness => "255"},
+    :purple => {:hue =>"5", :saturation => "255", :brightness => "255"},
+    :white => {:hue =>"6", :saturation => "255", :brightness => "255"},
 }

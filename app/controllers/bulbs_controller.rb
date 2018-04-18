@@ -35,23 +35,23 @@ class BulbsController < ApplicationController
       end
       @bulb.assign_attributes(attrs)
       bulb = {
-        "id" => @bulb.id,
-        "hue" => @bulb.hue,
-        "brightness" => @bulb.brightness,
-        "saturation" => @bulb.saturation,
-        "request_id" => request.request_id,
+        :id => @bulb.id,
+        :hue => @bulb.hue,
+        :brightness => @bulb.brightness,
+        :saturation => @bulb.saturation,
+        :request_id => request.request_id,
       }
       changelog = Changelog.new({
-                "remote_id" => ip(),
-                "guid" => request.request_id,
-                "action" => "update",
-                "bulb_id" => @bulb.id,
-                "hue" => @bulb.hue,
-                "saturation" => @bulb.saturation,
-                "brightness" => @bulb.brightness,
-                "succeeded" => false,
-                "processed" => false,
-                "created_at" => Time.current.to_s,
+                :remote_ip => ip(),
+                :guid => request.request_id,
+                :action => "update",
+                :bulb_id => @bulb.id,
+                :hue => @bulb.hue,
+                :saturation => @bulb.saturation,
+                :brightness => @bulb.brightness,
+                :succeeded => false,
+                :processed => false,
+                :created_at => Time.current.to_s,
             })
       changelog.save!
       LightChangesJob.perform_later bulb, changelog
