@@ -128,8 +128,8 @@ class BulbsController < ApplicationController
         if ! @shard
           # take the last character of the IP address and sort evens and odds
           # logger.info "using #{ip()} as the IP and the last char is #{ip()[-1].to_i} and it is #{ip()[-1].to_i % 2 == 0}"
-          # if ip()[-1].to_i % 2 == 0
-          if rand(2) == 0
+          # if rand(2) == 0
+          if ip()[-1].to_i % 2 == 0
             @shard = "even"
           else
             @shard = "odd"
