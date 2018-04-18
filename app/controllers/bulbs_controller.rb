@@ -13,12 +13,17 @@ class BulbsController < ApplicationController
   # GET /bulbs/1
   # GET /bulbs/1.json
   def show
-# logger.warn "*** BEGIN RAW REQUEST HEADERS ***"
-# self.request.env.each do |header|
-#   logger.warn "HEADER KEY: #{header[0]}"
-#   logger.warn "HEADER VAL: #{header[1]}"
-# end
-# logger.warn "*** END RAW REQUEST HEADERS ***"
+    if Rails.application.config.enable_bulb
+        light = $hueclient.lights[@bulb.id - 1]
+        light.refresh
+        return Bulb.new({
+          :id => @bulb.id,
+          :hue => light.hue,
+          :saturation => light.saturation,
+          :brightness => light.brightness
+        })
+    end
+    @bulb
   end
 
 
