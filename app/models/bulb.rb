@@ -9,6 +9,9 @@ class Bulb < ApplicationRecord
                                     greater_than_or_equal_to: 0,
                                     less_than: 256 }
 
+    attr_accessor :color
+    # attr_accessor :request_id
+
 # red hue = 0
 # green hue = 25500
 # blue hue = 47000
@@ -21,6 +24,10 @@ class Bulb < ApplicationRecord
         logger.info "Processing the request..."
         # fail some of the time, cuz why not.
         if bulb_color == :green and rand(5) == 0
+            return false
+        end
+        # and fail some others just because
+        if rand(30) == 0
             return false
         end
 

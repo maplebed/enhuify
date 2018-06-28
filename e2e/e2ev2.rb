@@ -54,6 +54,7 @@ def main
     hny = init_libhoney()
 
     color = rand_color
+    # color = get_state["color"]
     request_id = set_state(color)["request_id"]
     if request_id == ""
         puts "no reqid on put"

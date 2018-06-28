@@ -52,6 +52,9 @@ def main
     success = false
 
     color = rand_color
+    # colorname = get_state["color"]
+    # color = $colors[colorname]
+
     set_state(color)
     start = Time.now
     for iter in 1..30
