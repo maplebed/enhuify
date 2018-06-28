@@ -8,17 +8,24 @@ require 'libhoney'
 
 $url = 'http://localhost/bulb'
 
-
-$red = 0
-$green = 25500
-$blue = 47000
-$yellow = 17500
-$gold = 12100
-$pink = 55000
-$white = 40500 # sat = 0
+# color to HSB values
+$colors = {
+    :red => {:hue => 0, :saturation => 254, :brightness => 254},
+    :orange => {:hue => 4915, :saturation => 254, :brightness => 254},
+    :yellow => {:hue => 9830, :saturation => 254, :brightness => 254},
+    :lime => {:hue => 13289, :saturation => 254, :brightness => 254},
+    :green => {:hue => 25500, :saturation => 254, :brightness => 254},
+    :cyan => {:hue => 32585, :saturation => 254, :brightness => 254},
+    :blue => {:hue => 47000, :saturation => 254, :brightness => 254},
+    :purple => {:hue => 50608, :saturation => 254, :brightness => 254},
+    :pink => {:hue => 57344, :saturation => 254, :brightness => 254},
+    :white => {:hue => 0, :saturation => 0, :brightness => 254},
+}
 
 def rand_color
-    rand(65536)
+    [$colors[:red], $colors[:orange], $colors[:yellow], $colors[:lime],
+      $colors[:green], $colors[:cyan], $colors[:blue], $colors[:purple],
+      $colors[:pink], $colors[:white]].sample
 end
 
 def get_state
@@ -26,6 +33,7 @@ def get_state
 end
 
 def set_state(color)
+    puts "setting color to #{color}"
     response = HTTParty.put($url,
         :body => color.to_json,
         :headers => { 'Content-Type' => 'application/json' }
@@ -46,7 +54,10 @@ def main
     hny = init_libhoney()
 
     color = rand_color
-    request_id = set_state(:hue => color)["request_id"]
+    request_id = set_state(color)["request_id"]
+    if request_id == ""
+        puts "no reqid on put"
+    end
     start = Time.now
     for iter in 1..120
         success = get_state["request_id"] == request_id
@@ -63,6 +74,8 @@ def main
         :durationSec => dur,
         :success => success,
         :iterations => iter,
+        :request_id => request_id,
+        :color => color,
     })
     hny.close
 end
