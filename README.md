@@ -41,10 +41,10 @@ After running `db:migrate` and `db:seed`, the following is a transcript of how y
     $ curl localhost/bulb
     {"hue":1234,"saturation":255,"brightness":52}
 
-    $ curl -X PUT localhost/bulb -H "Content-Type: application/json" -d '{"hue":4321, "saturation": 0, "brightness": 120}'
+    $ curl -X PUT localhost/bulb -H "Content-Type: application/json" -d '{"color":"orange"}'
 
     $ curl localhost/bulb
-    {"hue":4321,"saturation":0,"brightness":120}
+    {"hue":4915,"saturation":254,"brightness":254,"color":"orange"}%
 
 ## phase two - request IDs
 
@@ -56,13 +56,13 @@ enable returning request IDs
 Then repeat the same steps as above, note the new field, and that the request ID returned when issuing a `PUT` is then present in the resulting `GET` indicating that that request is in fact the one that changed the state.
 
     $ curl localhost/bulb
-    {"hue":4321,"saturation":0,"brightness":120,"request_id":"813394de-6b1e-491f-9f69-7383d3f6bda9"}
+    {"hue":4915,"saturation":254,"brightness":254,"color":"orange","request_id":"d11ae0e5-4be4-40d1-927b-98ac8dea20c8"}
 
-    $ curl -X PUT localhost/bulb -H "Content-Type: application/json" -d '{"hue":55120, "saturation": 200, "brightness": 240}'
-    {"request_id":"3533a8bd-6bea-4dfa-853c-2fee731a6d52"}
+    $ curl -X PUT localhost/bulb -H "Content-Type: application/json" -d '{"color":"blue"}'
+    {"request_id":"5e1ee9de-e784-4d4e-89a7-d69da0ffd1b7"}
 
     $ curl localhost/bulb
-    {"hue":55120,"saturation":200,"brightness":240,"request_id":"3533a8bd-6bea-4dfa-853c-2fee731a6d52"}
+    {"hue":47000,"saturation":254,"brightness":254,"color":"blue","request_id":"5e1ee9de-e784-4d4e-89a7-d69da0ffd1b7"}
 
 However, notice that if you issue two commands in quick succession and immediately fetch the state, the second command takes some time before it has happened.
 

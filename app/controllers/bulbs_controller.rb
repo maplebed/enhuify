@@ -134,6 +134,15 @@ class BulbsController < ApplicationController
           else
             @shard = "odd"
           end
+          # alternate universe
+          # take the last character of the client port and sort to evens / odds
+          # derp can't find it.
+          # next choice: random
+          # if [0,1].sample == 0
+          #   @shard = "even"
+          # else
+          #   @shard = "odd"
+          # end
         end
       end
       logger.info "set shard to >>#{@shard}<<"

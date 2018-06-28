@@ -8,7 +8,6 @@ class Bulb < ApplicationRecord
     validates :brightness, numericality: { only_integer: true,
                                     greater_than_or_equal_to: 0,
                                     less_than: 256 }
-    attr_accessor :color
 
 # red hue = 0
 # green hue = 25500
@@ -41,6 +40,11 @@ class Bulb < ApplicationRecord
             logger.info "light returned #{ok}"
         end
         return self.save!
+    end
+
+    # allow color to be an object of a bulb when the hsb values match a known color
+    def color
+        bulb_color
     end
 
     private
