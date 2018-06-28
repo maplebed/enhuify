@@ -22,9 +22,15 @@ class LightChangesJob < ApplicationJob
   end
 
   def perform(bulbmap, changelog)
-    shard = bulbmap["id"].to_i - 1
+    shard = bulbmap[:id].to_i - 1
     logger.info "bulbmap shard is #{shard}"
     LightChangesJob.queues[shard] << [bulbmap, changelog]
+  end
+
+  def self.clear()
+    logger.info "clearing queue for both shards"
+    LightChangesJob.queues[0].clear
+    LightChangesJob.queues[1].clear
   end
 
   def self.honeycomb

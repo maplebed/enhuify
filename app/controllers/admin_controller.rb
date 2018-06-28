@@ -8,6 +8,19 @@ class AdminController < ApplicationController
     ]
 
     # example: curl 'localhost:3000/admin/toggle_sharding?trustme=puppies4eva'
+    def clear_queue
+        LightChangesJob.clear
+        render :queue_length
+    end
+
+    def queue_length
+         @qlens0 = LightChangesJob.queues[0].length
+         @qlens1 = LightChangesJob.queues[1].length
+         render :queue_length
+     end
+
+
+    # example: curl 'localhost:3000/admin/toggle_sharding?trustme=puppies4eva'
     def toggle_sharding
         Rails.application.config.allow_sharding = !Rails.application.config.allow_sharding
         render :get_sharding

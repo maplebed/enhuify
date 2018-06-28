@@ -1,0 +1,7 @@
+#!/bin/bash
+
+source $(dirname $0)/common.sh
+
+delay=$1
+
+curl -H "x-trustme: $password" "localhost/admin/set_queue_delay/${delay}"
