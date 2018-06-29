@@ -24,7 +24,7 @@ class BulbsController < ApplicationController
         if color = color_from_hsb(hsb)
           hsb[:color] = color
         end
-        b = Bulb.new({ :id => @bulb.id }.merge(hsb))
+        b = Bulb.new({ :id => @bulb.id, :request_id => @bulb.request_id }.merge(hsb))
         @bulb = b
     end
     @bulb

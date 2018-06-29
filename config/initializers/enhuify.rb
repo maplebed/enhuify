@@ -2,7 +2,7 @@
 
 # choose whether to only interact with the DB or also with the bulb. This sholud
 # be true before wes start the workshop
-Rails.application.config.enable_bulb = true
+Rails.application.config.enable_bulb = false
 
 # choose whether to block on changing the light as part of responding to the
 # request or queue the change to be actually made on the light at a later time.
@@ -21,7 +21,7 @@ Rails.application.config.allow_sharding = false
 
 # disable returning request IDs when we start up. Change this setting by poking
 # /admin/toggle_return_ids or /admin/set_return_ids
-Rails.application.config.return_ids = true
+Rails.application.config.return_ids = false
 
 # default secret to confirm that access to the admin pages is allowed
 Rails.application.config.admin_secret = "sofuzzysofuzzy"
