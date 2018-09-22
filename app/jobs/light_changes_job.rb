@@ -74,13 +74,13 @@ class LightChangesJob < ApplicationJob
 
       changelog.save!
 
-      event.add(changelog.attributes)
-      event.add_field('delaySec', changelog.updated_at - changelog.created_at)
+      event.add changelog.attributes
+      event.add_field 'delaySec', changelog.updated_at - changelog.created_at
       event.send
 
       # take a while to finish the job to limit the speed at which jobs are
       # pulled off the queue. Rate set via config
-      sleep(Rails.application.config.queue_delay)
+      sleep Rails.application.config.queue_delay
     end
   end
 
