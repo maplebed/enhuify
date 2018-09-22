@@ -1,42 +1,16 @@
-# README
+# Enhuify is a Rails app fronting a Hue light bulb
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Light bulb can have the following set.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-
-enhuify is a rails app fronting a Hue light bulb
-
-light bulb can have the following set
 * hue (0-65535)
 * saturation (0-255)
 * brightness (0-255)
 
 # Example use
 
-After running `db:migrate` and `db:seed`, the following is a transcript of how you might interact with this server
+After running `db:migrate` and `db:seed`, the following is a transcript of how you might interact with this server.
 
-## phase one - basic interactions
+## Phase One — Basic Interactions
 
     $ curl localhost/bulb
     {"hue":1234,"saturation":255,"brightness":52}
@@ -46,9 +20,9 @@ After running `db:migrate` and `db:seed`, the following is a transcript of how y
     $ curl localhost/bulb
     {"hue":4915,"saturation":254,"brightness":254,"color":"orange"}%
 
-## phase two - request IDs
+## Phase Two — Request IDs
 
-enable returning request IDs
+Enable returning request IDs.
 
     $ curl -H "x-trustme: puppies4eva" localhost/admin/toggle_return_ids
     {"return_ids":true}
@@ -79,7 +53,7 @@ Though the `PUT` returns immediately, there is some queuing before the command t
 
 We introduce two new endpoints here to let you more easily understand the state of the light.
 
-The `pending` endpoint gives you a list of currently outstanding change requests
+The `pending` endpoint gives you a list of currently outstanding change requests.
 
     $ for i in {1..4}; do curl -X PUT localhost/bulb -H "Content-Type: application/json" -d '{"hue":12345, "saturation": 30, "brightness": 10}'; done
     {"request_id":"44c2b57a-2698-4821-8164-4b8a57648777"}{"request_id":"fc700191-9953-4619-8ef0-f45eef6b2db8"}{"request_id":"4db9320a-12a9-45e9-aa89-f7bcecc01deb"}{"request_id":"ef0ebf44-d782-4e0f-baaa-1b185d51a659"}
@@ -107,11 +81,11 @@ The `changes` endpoint gives you the most recent 50 changes to have succeeded.
     $ curl -s localhost/changes | jq '. | length'
     50
 
-## phase three - sharding
+## Phase Three — Sharding
 
 In order to reduce contention on the one bulb, we shard incoming requests by IP address - those that end with an odd number go to bulb 1 and those with even number go to bulb 2.
 
-Enable sharding
+Enable sharding.
 
     $ curl -H "x-trustme: puppies4eva" localhost/admin/toggle_sharding
     {"allow_sharding":true}
