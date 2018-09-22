@@ -6,19 +6,24 @@ class LightChangesJob < ApplicationJob
   class << self
     def queues
       @queues ||= [0, 1].map do |_shard|
-        q = Queue.new
+        queue = Queue.new
+
         Thread.new do
-          while job = q.pop
+          loop do
+            job = queue.pop
+            break if job.blank?
+
             bulbmap, changelog = job
             begin
               # don't let job panics kill the thread
-              perform_shard(bulbmap, changelog, q.length)
+              perform_shard(bulbmap, changelog, queue.length)
             rescue StandardError => e
               logger.error "caught exception: #{e}, #{e.backtrace}"
             end
           end
         end
-        q
+
+        queue
       end
     end
 
