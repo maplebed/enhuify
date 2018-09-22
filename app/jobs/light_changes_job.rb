@@ -57,11 +57,11 @@ class LightChangesJob < ApplicationJob
       bulb.assign_attributes bulbmap
 
       begin
-        start = Time.now
-        ok    = bulb.save
-        dur   = Time.now - start
+        start    = Time.now
+        ok       = bulb.save
+        duration = Time.now - start
 
-        event.add_field 'saveSec', dur
+        event.add_field 'saveSec', duration
 
         if ok == true
           changelog.succeeded = true
