@@ -42,22 +42,24 @@ class LightChangesJob < ApplicationJob
       )
     end
 
-    def perform_shard(bulbmap, changelog, qlen)
-      ev = honeycomb.event
-      ev.timestamp = changelog.created_at
-      ev.add(bulbmap)
-      ev.add_field('queue_length', qlen)
+    def perform_shard(bulbmap, changelog, queue_length)
+      event           = honeycomb.event
+      event.timestamp = changelog.created_at
+
+      event.add(bulbmap)
+      event.add_field('queue_length', queue_length)
 
       # mark this job as having been processed, no longer pending
       changelog.processed = true
       logger.info "processing queued change: #{bulbmap}"
       bulb = Bulb.find(bulbmap[:id])
       bulb.assign_attributes(bulbmap)
+
       begin
         start = Time.now
         ok = bulb.save
         dur = Time.now - start
-        ev.add_field('saveSec', dur)
+        event.add_field('saveSec', dur)
         if ok == true
           changelog.succeeded = true
         else
@@ -66,11 +68,12 @@ class LightChangesJob < ApplicationJob
       rescue StandardError => e
         logger.error "bulb save blew up: #{e}, #{e.backtrace}"
       end
+
       changelog.save!
 
-      ev.add(changelog.attributes)
-      ev.add_field('delaySec', changelog.updated_at - changelog.created_at)
-      ev.send
+      event.add(changelog.attributes)
+      event.add_field('delaySec', changelog.updated_at - changelog.created_at)
+      event.send
 
       # take a while to finish the job to limit the speed at which jobs are
       # pulled off the queue. Rate set via config
