@@ -87,6 +87,7 @@ class LightChangesJob < ApplicationJob
   def perform(bulbmap, changelog)
     shard = bulbmap[:id].to_i - 1
     logger.info "bulbmap shard is #{shard}"
+
     LightChangesJob.queues[shard] << [bulbmap, changelog]
   end
 end
