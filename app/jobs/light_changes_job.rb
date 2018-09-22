@@ -63,7 +63,7 @@ class LightChangesJob < ApplicationJob
 
         event.add_field 'saveSec', duration
 
-        if ok == true
+        if ok
           changelog.succeeded = true
         else
           logger.error 'failed to save bulb for unknown reason'
