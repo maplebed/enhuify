@@ -72,8 +72,8 @@ class LightChangesJob < ApplicationJob
       ev.add_field('delaySec', changelog.updated_at - changelog.created_at)
       ev.send
 
-      # take a while to finish the job to limit the speed at which jobs are pulled
-      # off the queue.  Rate set via config
+      # take a while to finish the job to limit the speed at which jobs are
+      # pulled off the queue. Rate set via config
       sleep(Rails.application.config.queue_delay)
     end
   end
