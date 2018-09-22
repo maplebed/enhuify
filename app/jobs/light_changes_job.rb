@@ -46,20 +46,23 @@ class LightChangesJob < ApplicationJob
       event           = honeycomb.event
       event.timestamp = changelog.created_at
 
-      event.add(bulbmap)
-      event.add_field('queue_length', queue_length)
+      event.add bulbmap
+      event.add_field 'queue_length', queue_length
 
       # mark this job as having been processed, no longer pending
       changelog.processed = true
       logger.info "processing queued change: #{bulbmap}"
+
       bulb = Bulb.find(bulbmap[:id])
-      bulb.assign_attributes(bulbmap)
+      bulb.assign_attributes bulbmap
 
       begin
         start = Time.now
-        ok = bulb.save
-        dur = Time.now - start
-        event.add_field('saveSec', dur)
+        ok    = bulb.save
+        dur   = Time.now - start
+
+        event.add_field 'saveSec', dur
+
         if ok == true
           changelog.succeeded = true
         else
